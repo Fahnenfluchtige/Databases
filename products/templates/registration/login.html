@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 50px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        p {
+            color: red;
+            text-align: center;
+        }
+
+        form {
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            background-color: #85a1ff;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Войти</h2>
+
+        {% if form.errors %}
+            <p>Неверный логин или пароль. Пожалуйста, попробуйте снова.</p>
+        {% endif %}
+
+        {% if next %}
+            {% if user.is_authenticated %}
+                <p>У вас нет доступа. Пожалуйста, авторизуйтесь.</p>
+            {% else %}
+                <p>Войдите, чтобы посмотреть список товаров.</p>
+            {% endif %}
+        {% endif %}
+
+        <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+
+            <label for="id_username">Логин:</label>
+            {{ form.username }}
+            <br>
+
+            <label for="id_password">Пароль:</label>
+            {{ form.password }}
+            <br>
+
+            <input type="submit" value="Войти">
+            <input type="hidden" name="next" value="{{ next }}">
+        </form>
+    </div>
+</body>
+</html>

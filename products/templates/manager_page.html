@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <style>
+      body {
+        font-family: "Montserrat", sans-serif;
+      }
+      table {
+        font-family: Arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+      }
+
+      th,
+      td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+      }
+
+      th {
+        background-color: #f2f2f2;
+      }
+
+      .navbar {
+        overflow: hidden;
+        background-color: rgb(57, 76, 136);
+      }
+
+      .navbar a {
+        float: left;
+        display: block;
+        color: #f2f2f2;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+      }
+
+      .navbar a:hover {
+        background-color: #ddd;
+        color: black;
+      }
+      .hidden {
+        display: none;
+      }
+
+      .block {
+        display: none;
+        margin: 10px;
+      }
+
+      .todo {
+        font-size: 20px;
+        margin-top: 10px;
+      }
+
+      form {
+       
+        margin-top: 20px;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select {
+        font-size: 10px;
+        width: 25%;
+        height: 15px;
+        padding: 10px;
+        margin-bottom: 10px;
+        box-sizing: border-box;
+    }
+
+    select {
+        background-color: #f8f8f8;
+        border: 1px solid #ccc;
+        font-size: 10px;
+      }
+
+    input[type="submit"] {
+        background-color: #5f46eb;
+        color: white;
+        padding: 10px;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+      
+    </style>
+  </head>
+  <body>
+    <div class="navbar">
+      <a href="{% url 'fashion' %}">Мода</a>
+      <a href="{% url 'health' %}">Здоровье</a>
+      <a href="{% url 'cosmetics' %}">Красота</a>
+      <a href="{% url 'rig' %}">Упряжки</a>
+      <a href="{% url 'accesuars' %}">Аксессуары</a>
+      <a href="{% url 'productswithgroomthings' %}">Товары для груминга</a>
+      {% if user.username == 'manager' %}
+      <a href="{% url 'ishereformanager' %}">Список товаров</a>
+       <a href="{% url 'manager_page' %}">Работа с товарами</a>
+      {% endif %}
+      
+      {% if user.username == 'user' %}
+      <a href="{% url 'showbasket' %}">Корзина</a>
+      <a href="{% url 'ishereforuser' %}">Список товаров</a>
+  
+
+      {% endif %} 
+    </div>
+    <div class="todo">Добавить данные</div>
+    <form method="post" action="{% url 'insert_product' %}">
+      {% csrf_token %}
+      <label>Наименование продукта:</label>
+      {{ insert_form.product_name }}
+      <br />
+
+      <label>Для какого размера (если нет - любой):</label>
+      {{ insert_form.for_size }}
+      <br />
+
+      <label>Цвет (можно оставить пустым):</label>
+      {{ insert_form.color }}
+      <br />
+
+      <label>Материал (можно оставить пустым):</label>
+      {{ insert_form.material }}
+      <br />
+
+      <label>Цена:</label>
+      {{ insert_form.price }}
+      <br />
+
+      <label>Статус:</label>
+      {{ insert_form.status }}
+      <br />
+
+      <div class="form-group">
+        <label>Товар:</label> 
+        <select id="select">
+          <option>None</option>
+          <option>Лекарство</option>
+          <option>Косметика</option>
+          <option>Витаминка</option>
+          <option>Средство груминга</option>
+          <option>Одежда</option>
+          <option>Обувь</option>
+          <option>Ошейник</option>
+          <option>Шлейка</option>
+          <option>Игрушка</option>
+        </select>
+      </div>
+
+      <div class="block" style="visibility: hidden"></div>
+      <div class="block">
+        <label>Тип лекарства:</label>
+        {{ insert_form.drugs_type }}
+        <br>
+        Вы выбрали: <span id="drugs">{{ insert_form.drugs_type.value }}</span>
+      </div>
+      </div>
+      <div class="block">
+        <label>Тип косметики:</label> {{ insert_form.cosmetics_type }}
+        <br>
+        Вы выбрали: <span id="cosmetics">{{ insert_form.cosmetics_type.value }}</span>
+      </div>
+      </div>
+      <div class="block">
+        <label>Тип витаминов:</label> {{ insert_form.vitamins_type }}
+        <br>
+        Вы выбрали: <span id="vitamin">{{ insert_form.vitamins_type.value }}</span>
+      </div>
+      </div>
+      <div class="block">
+        <label>Тип средства для груминга:</label> {{insert_form.groom_things_type }}
+        <br>
+        Вы выбрали: <span id="groom">{{ insert_form.groom_things_type.value }}</span>
+      </div>
+      <div class="block">
+        <label>Для какого мероприятия одежда:</label> {{insert_form.clothes_type }}
+        <br>
+        Вы выбрали: <span id="clothes">{{ insert_form.clothes_type.value }}</span>
+      </div>
+      <div class="block">
+        <label>Для какого мероприятия обувь:</label> {{ insert_form.boots_type}}
+        <br>
+        Вы выбрали: <span id="boots">{{ insert_form.boots_type.value }}</span>
+      </div>
+      <div class="block">
+        <label>Ошейник :</label>
+        {{ insert_form.collars_type }} <br>
+        Вы выбрали: <span id="collars">{{ insert_form.collars_type.value }}</span>
+    </div>
+    <div class="block">
+        <label>К какому цвету относится шлейка:</label>
+        {{ insert_form.harness_type }} <br>
+        Вы выбрали: <span id="harness">{{ insert_form.harness_type.value }}</span>
+    </div>
+    <div class="block">
+      <label>Тип игрушки:</label>
+      {{ insert_form.toys_type }} <br>
+  </div>
+
+      <input type="submit" value="Добавить" />
+    </form>
+
+    <div class="todo">Удалить данные</div>
+    <p>* Или можно сделать это на странице "Список товаров"</p>
+    <form method="post" action="{% url 'delete_product' %}">
+      {% csrf_token %}
+      <div><label>Id Товара:</label> {{ delete_form.product_id}}</div>
+
+      <input type="submit" value="Удалить" />
+    </form>
+
+    <div class="todo">Обновить данные</div>
+    <form method="post" action="{% url 'update_product' %}">
+      {% csrf_token %}
+      <div><label>Id Товара:</label> {{ update_form.product_id}}</div>
+
+      <div>
+        <label>Наименование товара (новое):</label> 
+        {{update_form.product_name}}
+      </div>
+
+      <input type="submit" value="Обновить" />
+    </form>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        let select = document.getElementById("select");
+        let block = document.querySelectorAll(".block");
+        let lastIndex = 0;
+
+        select.addEventListener("change", function () {
+          block[lastIndex].style.display = "none";
+          let index = select.selectedIndex;
+          block[index].style.display = "block";
+          lastIndex = index;
+        });
+      });
+
+   
+      document.getElementById('id_collars_type').addEventListener('change', function() {
+          document.getElementById('collars').textContent = this.value;
+      });
+
+      document.getElementById('id_harness_type').addEventListener('change', function() {
+          document.getElementById('harness').textContent = this.value;
+      });
+
+      document.getElementById('id_boots_type').addEventListener('change', function() {
+          document.getElementById('boots').textContent = this.value;
+      });
+
+      document.getElementById('id_clothes_type').addEventListener('change', function() {
+          document.getElementById('clothes').textContent = this.value;
+      });
+
+      document.getElementById('id_drugs_type').addEventListener('change', function() {
+          document.getElementById('drugs').textContent = this.value;
+      });
+
+      document.getElementById('id_cosmetics_type').addEventListener('change', function() {
+          document.getElementById('cosmetics').textContent = this.value;
+      });
+
+      document.getElementById('id_vitamins_type').addEventListener('change', function() {
+          document.getElementById('vitamin').textContent = this.value;
+      });
+
+      document.getElementById('id_groom_things_type').addEventListener('change', function() {
+          document.getElementById('groom').textContent = this.value;
+      });
+    </script>
+  </body>
+</html>
